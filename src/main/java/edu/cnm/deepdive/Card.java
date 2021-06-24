@@ -1,13 +1,19 @@
 package edu.cnm.deepdive;
 
+import java.util.Objects;
+
 public class Card {
 
   private final Rank rank;
   private final Suit suit;
+  private final int hash;
+  private final String representation;
 
   public Card(Rank rank, Suit suit) {
     this.rank = rank;
     this.suit = suit;
+    hash = Objects.hash(rank, suit);
+    representation = rank.getSymbol() + suit.getSymbol();
   }
 
   public Rank getRank() {
@@ -25,7 +31,7 @@ public class Card {
 
   @Override
   public int hashCode() {
-    return super.hashCode();
+    return hash;
   }
 
   @Override
@@ -34,8 +40,10 @@ public class Card {
     if (obj == this) {
       eq = true;
     } else if (obj instanceof Card) {
-      Card other = (Card) obj; // class cast - obj to card: other now = card in this method
-      eq = ((rank == other.rank) && (suit == other.suit)); // compare rank and suit of this and other
+      Card other = (Card) obj;
+      eq = ((hash == other.hash)
+          && (rank == other.rank)
+          && (suit == other.suit));
     }
     return eq;
   }
