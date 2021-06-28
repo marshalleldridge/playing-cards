@@ -18,6 +18,7 @@ public class Card {
 
   public Rank getRank() {
     return rank;
+
   }
 
   public Suit getSuit() {
@@ -26,7 +27,7 @@ public class Card {
 
   @Override
   public String toString() {
-    return rank.getSymbol() + suit.getSymbol();
+    return representation;
   }
 
   @Override
