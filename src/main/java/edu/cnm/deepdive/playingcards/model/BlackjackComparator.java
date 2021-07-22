@@ -2,18 +2,54 @@ package edu.cnm.deepdive.playingcards.model;
 
 import edu.cnm.deepdive.general.model.Hand;
 import java.util.Comparator;
+import java.util.Map;
 
 public class BlackjackComparator implements Comparator<Hand<Card>> {
 
+  private static final int HARD_SOFT_INCREMENT = 10;
+  private static final int BLACKJACK_HAND_SIZE = 2;
+  private static final int HAND_VALUE_LIMIT = 21;
+  private static final Map<Rank, Integer> RANK_VALUES = Map.ofEntries(
+      Map.entry(Rank.ACE, 1),
+      Map.entry(Rank.TWO, 2),
+      Map.entry(Rank.THREE, 3),
+      Map.entry(Rank.FOUR, 4),
+      Map.entry(Rank.FIVE, 5),
+      Map.entry(Rank.SIX, 6),
+      Map.entry(Rank.SEVEN, 7),
+      Map.entry(Rank.EIGHT, 8),
+      Map.entry(Rank.NINE, 9),
+      Map.entry(Rank.TEN, 10),
+      Map.entry(Rank.JACK, 10),
+      Map.entry(Rank.QUEEN, 10),
+      Map.entry(Rank.KING, 10)
+  );
 
   @Override
   public int compare(Hand<Card> hand1, Hand<Card> hand2) {
-    return 0; //TODO (consider helped method that computes value for a hand then compare 2 hands)
-    // Rules:
-    // BJ vs BJ ties & bust vs bust ties
-    // 2 card 21 beats more than 2 card 21
-    // over 21 looses
-    // zero cards beats a bust
-    // ace can be 1 or 11 (only one ace can be 1)
+    return value(hand1) - value(hand2);
   }
+
+  protected int value(Hand<Card> hand) {
+    int total = 0;
+    boolean soft = false;
+    for (Card card : hand) {
+      total += RANK_VALUES.get(card.getRank());
+      if (card.getRank() == Rank.ACE && total <= HAND_VALUE_LIMIT - HARD_SOFT_INCREMENT) {
+        soft = true;
+        total += HARD_SOFT_INCREMENT;
+      } else if (total > HAND_VALUE_LIMIT && soft ) {
+        soft = false;
+        total -= HARD_SOFT_INCREMENT;
+      }
+    }
+
+    if (total > HAND_VALUE_LIMIT) {
+      total = -1;
+    } else if (total == HAND_VALUE_LIMIT && hand.size() == BLACKJACK_HAND_SIZE) {
+      total++;
+    }
+    return total;
+  }
+
 }
