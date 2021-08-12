@@ -16,12 +16,12 @@ public class QuickSorter {
       T pivot = data[pivotIndex];
       data[pivotIndex] = data[start];
       data[start] = pivot;
-      int marker = 0;
+      int marker = start;
       for (int i = start + 1; i < end; i++) {
         T value = data[i];
         if (value.compareTo(pivot) <= 0) {
           marker++;
-          if (i > marker + 1) {
+          if (i > marker) {
             data[i] = data[marker];
             data[marker] = value;
           }
